@@ -5,6 +5,11 @@ Created on Mon Dec 20 15:41:32 2021
 
 @author: carolyndavis
 """
+
+
+# =============================================================================
+# Imports Utilized
+# =============================================================================
 import wordcloud as wc
 import numpy as np ## Linear ALgebra
 import pandas as pd ## For working with data
@@ -14,8 +19,8 @@ import matplotlib.pyplot as plt ## Visualization
 import plotly as py ## Visualization
 from wordcloud import WordCloud, STOPWORDS ## To create word clouds from script
 import os
-
-
+import io
+from io import StringIO
 
 # =============================================================================
 # Reading in the data
@@ -32,61 +37,142 @@ df.isnull().sum()
 #there are 3 nulls so its cool to drop
 df.dropna(inplace=True) 
 
+# =============================================================================
+# Removing the Punctuation
+# =============================================================================
+
+
+#Need to remove thepunctuation for real semantic analysis...
+df["Sentence"] = df['Sentence'].str.replace('[^\w\s]','')
+df.head()
+
+# =============================================================================
+# Getting all the rows together for each designated character
+# =============================================================================
+# word_seperator = df.Sentence.str.cat(sep=' ')
+#test worked now all words are divided correctly
+
+# =============================================================================
+# #Looking at the characters present in the data 
+# =============================================================================
+df.Name.value_counts().head(50)
+#Takeaway:
+    #over 50 total characters possibly more, so lets focus on prominent
+    #protagonists and antagonists in the series 
+
+# =============================================================================
+# Characters Chosen--------------
+# =============================================================================
+
+# tyrion lannister      1760
+# jon snow              1133
+# daenerys targaryen    1048
+# cersei lannister      1005
+# jaime lannister        945
+# sansa stark            784
+# arya stark             783
 
 # =============================================================================
 # Grabbing the Dialogues
 # =============================================================================
-
-#first looking at the comparison of dialogue counts across the 8 seasons
-
-#grabs the count groups of dialogue for each season
-# dialogue_count = df['Season'].value_counts().reset_index()
-
-# #renames the columns in the new df
-# dialogue_count.columns=['Season', 'Counts']
+#Make new dfs for each characters relevant dialogue in the script data
 
 
-# #sorts the seasons in ascending order
-# dialogue_count.sort_values(by='Season', inplace=True)
-
-# #visualizing the dialogue accounts for each season
-# px.bar(dialogue_count, 'Season', 'Counts', title='Total Dialogue Counts Per Season.')
 
 # =============================================================================
-# Dialogue Grabs for Each Character 
+# Tyrion Lannister 
 # =============================================================================
-# daenerys_targaryen = df[df['Name']=='daenerys targaryen']
-# wordcloud = WordCloud(stopwords=STOPWORDS, min_font_size=10, background_color ='white', max_words=500).generate(
-#     ' '.join(i for i in daenerys_targaryen['Sentence']))
-# plt.figure(figsize = (10, 8), facecolor = None) 
-# plt.imshow(wordcloud) 
-# plt.axis("off") 
-# # plt.tight_layout(pad = 0) 
-# plt.show() 
+tyrion_lannister = df[df['Name']=='tyrion lannister']
 
-df.Name.value_counts(normalize = True)
-test = df[df['Name']=='daenerys targaryen']
-test1= df[df['Sentence']].copy()
+wordcloud = WordCloud(stopwords=STOPWORDS,background_color ='white',max_words=500,relative_scaling=0,collocations=True,colormap=('binary')).generate(
+    ' '.join(i for i in tyrion_lannister['Sentence']))
+plt.figure(figsize = (8, 8), facecolor = None) 
+plt.imshow(wordcloud) 
+plt.axis("off") 
+plt.tight_layout(pad = 0) 
+plt.show() 
+#Takeaways:
+# TODO: ATP can only get the text to read in black/grey appearance with colormap->'binary'
 
-import nltk
-import unicodedata
-import re
+# =============================================================================
+# Jon Snow
+# =============================================================================
+jon_snow = df[df['Name']=='jon snow']
+
+wordcloud = WordCloud(stopwords=STOPWORDS,background_color ='white',max_words=500,relative_scaling=0,collocations=True,colormap=('binary')).generate(
+    ' '.join(i for i in jon_snow['Sentence']))
+plt.figure(figsize = (8, 8), facecolor = None) 
+plt.imshow(wordcloud) 
+plt.axis("off") 
+plt.tight_layout(pad = 0) 
+plt.show() 
+
+# =============================================================================
+# Daenerys Targaryen 
+# =============================================================================
+
+daenerys_targaryen = df[df['Name']=='daenerys targaryen']
+
+wordcloud = WordCloud(stopwords=STOPWORDS,background_color ='white',max_words=500,relative_scaling=0,collocations=True,colormap=('binary')).generate(
+    ' '.join(i for i in daenerys_targaryen['Sentence']))
+plt.figure(figsize = (8, 8), facecolor = None) 
+plt.imshow(wordcloud) 
+plt.axis("off") 
+plt.tight_layout(pad = 0) 
+plt.show() 
 
 
-def clean(text):
-    '''Simplified text cleaning function'''
-    text = text1
-    text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8', 'ignore')
-    return re.sub(r"[^a-z0-9\s]", '', text)
+# =============================================================================
+# cersei lannister
+# =============================================================================
+cersei_lannister = df[df['Name']=='cersei lannister']
 
-all_words = clean(' '.join(df.Sentence))
+wordcloud = WordCloud(stopwords=STOPWORDS,background_color ='white',max_words=500,relative_scaling=0,collocations=True,colormap=('binary')).generate(
+    ' '.join(i for i in cersei_lannister['Sentence']))
+plt.figure(figsize = (8, 8), facecolor = None) 
+plt.imshow(wordcloud) 
+plt.axis("off") 
+plt.tight_layout(pad = 0) 
+plt.show() 
 
 
+# =============================================================================
+# jaime lannister 
+# =============================================================================
+jaime_lannister = df[df['Name']=='jaime lannister']
 
-# Define the function to remove the punctuation
-def remove_punctuations(text):
-    for punctuation in string.punctuation:
-        text = text.replace(punctuation, '')
-    return text
-# Apply to the DF series
-text1['Sentence'] =text1.Sentence.apply(remove_punctuations)
+wordcloud = WordCloud(stopwords=STOPWORDS,background_color ='white',max_words=500,relative_scaling=0,collocations=True,colormap=('binary')).generate(
+    ' '.join(i for i in jaime_lannister['Sentence']))
+plt.figure(figsize = (8, 8), facecolor = None) 
+plt.imshow(wordcloud) 
+plt.axis("off") 
+plt.tight_layout(pad = 0) 
+plt.show() 
+
+# =============================================================================
+# sansa stark
+# =============================================================================
+sansa_stark = df[df['Name']=='sansa stark']
+
+wordcloud = WordCloud(stopwords=STOPWORDS,background_color ='white',max_words=500,relative_scaling=0,collocations=True,colormap=('binary')).generate(
+    ' '.join(i for i in sansa_stark['Sentence']))
+plt.figure(figsize = (8, 8), facecolor = None) 
+plt.imshow(wordcloud) 
+plt.axis("off") 
+plt.tight_layout(pad = 0) 
+plt.show() 
+
+
+# =============================================================================
+#  arya stark
+# =============================================================================
+arya_stark = df[df['Name']=='arya stark']
+
+wordcloud = WordCloud(stopwords=STOPWORDS,background_color ='white',max_words=500,relative_scaling=0,collocations=True,colormap=('binary')).generate(
+    ' '.join(i for i in arya_stark['Sentence']))
+# specify the custom font to use
+plt.figure(figsize = (8, 8), facecolor = None) 
+plt.imshow(wordcloud) 
+plt.axis("off") 
+plt.tight_layout(pad = 0) 
+plt.show() 
