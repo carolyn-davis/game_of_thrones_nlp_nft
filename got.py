@@ -22,6 +22,8 @@ import os
 import io
 from io import StringIO
 
+from PIL import Image
+
 # =============================================================================
 # Reading in the data
 # =============================================================================
@@ -176,3 +178,34 @@ plt.imshow(wordcloud)
 plt.axis("off") 
 plt.tight_layout(pad = 0) 
 plt.show() 
+
+
+# =============================================================================
+# Creating the Mask 
+# =============================================================================
+# Create an array from the image you want to use as a mask
+## Your file path will look different
+
+import cv2   #image reader import
+image = cv2.imread("/Users/carolyndavis/Desktop/Side-Projects/game_of_thrones_nlp_nft/snatch.jpg")
+
+
+# =============================================================================
+# path!!!!
+# =============================================================================
+# /Users/carolyndavis/Desktop/Side-Projects/game_of_thrones_nlp_nft/dan.jpeg
+
+
+# =============================================================================
+# Testing the Mask on Danaerys
+# =============================================================================
+
+wordcloud = WordCloud(background_color='black', mask=image,mode="RGB",color_func=lambda *args,**kwargs: "white", 
+width=1000 , max_words=1500, height=1000, random_state=1,relative_scaling=0,collocations=True).generate(' '.join(i for i in daenerys_targaryen['Sentence']))
+plt.figure(figsize = (25, 25)) 
+plt.imshow(wordcloud, interpolation='bilinear') 
+plt.axis("off") 
+plt.tight_layout(pad = 0) 
+plt.axis("off")
+plt.show() 
+
